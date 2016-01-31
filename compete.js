@@ -12,7 +12,7 @@ function arrayN (n) {
 }
 
 function playGame (conf1, conf2) {
-	console.log('playing game', gameCount++)
+	// console.log('playing game', gameCount++)
 	const player1 = new Player(1, START_POSITION.slice(), conf1);
 
 	const player2 = new Player(-1, START_POSITION.slice(), conf2);
@@ -23,6 +23,7 @@ function playGame (conf1, conf2) {
 
 }
 
+//
 function playTournament (players, rounds) {
   const matrix = [];
 
@@ -47,8 +48,27 @@ function playTournament (players, rounds) {
 		}
 	})
 		.sort((o1, o2) => {
-			return o1 > o2 ? -1 : o1 < o2 ? 1 : 0;
+			return o1.score > o2.score ? -1 : o1.score < o2.score ? 1 : 0;
 		})
 };
 
-module.exports = {playGame, playTournament}
+function playChallengers(champion, players, rounds) {
+	const results = players.map((player, i) => {
+		return {
+			player,
+			score: arrayN(rounds)
+				.map(() => playGame(champion, player))
+				.filter(score => score > 0)
+				.length
+		}
+	})
+		.sort((o1, o2) => {
+			return o1.score > o2.score ? -1 : o1.score < o2.score ? 1 : 0;
+		})
+	return {
+		gamesWon: 100 * results.reduce((tot, r) => tot + r.score, 0) / (results.length * rounds),
+		strategiesBeaten: 100 * results.filter(s => s.score > rounds / 2).length / results.length
+	}
+}
+
+module.exports = {playGame, playTournament, playChallengers}

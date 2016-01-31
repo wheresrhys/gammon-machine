@@ -7,7 +7,7 @@ function arrayN (n) {
 }
 
 const players = 10;
-const sample = 20;
+const sample = 10;
 
 const confNames = [
 	'stragglerAversion',
@@ -28,7 +28,7 @@ function procreate (player1, player2) {
 	return arrayN(players - 2).map(() => {
 		return confNames.reduce((obj, name) => {
 			const random = Math.random();
-			obj[name] = random * player1[name] + (1 - random) * player2[name];
+			obj[name] = Math.random() * player1[name] + Math.random() * player2[name];
 			return obj;
 		}, {})
 	// always include the parents too
@@ -36,12 +36,18 @@ function procreate (player1, player2) {
 }
 
 function evolve (parents, generations) {
+	let incrementer = generations;
 	let thoroughbreds = parents;
 	let foals;
-	while (generations--) {
+	while (incrementer--) {
+		console.log('new generation', generations - incrementer)
 		foals = procreate(thoroughbreds[0], thoroughbreds[1]);
 		thoroughbreds = getWinners(foals);
+		const success = compete.playChallengers(thoroughbreds[0], randomPlayers(50), 7);
+		console.log(`percentage games won in generation ${generations - incrementer}: ${success.gamesWon}`);
+		console.log(`percentage strategies beaten in generation ${generations - incrementer}: ${success.strategiesBeaten}`);
 	}
+
 	return thoroughbreds[0];
 }
 
@@ -55,9 +61,8 @@ function randomPlayers(n) {
 		})
 }
 
-const stallion = evolve(randomPlayers(2), 10);
+const stallion = evolve(randomPlayers(2), 20);
 
-
-console.log(stallion, getWinners(randomPlayers(50).concat([stallion]))[0])
+console.log('stallion', stallion)
 
 
