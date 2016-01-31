@@ -85,17 +85,16 @@ class Player {
 		this.board = board;
 	}
 
-	_move(roll1, roll2) {
-		const firstMove = move(roll1, this.board);
+	_move(rolls) {
+		let boards = [this.board];
 
-		if (!firstMove.length) {
-			return [];
+		while (rolls.length) {
+			const roll = rolls.shift();
+			boards = boards.reduce((arr, board) => {
+				return arr.concat(move(roll, board))
+			}, []);
 		}
-
-		return firstMove.reduce((arr, board) => {
-			return arr.concat(move(roll2, board))
-		}, [])
-
+		return boards;
 	}
 
 	scoreBoard (board) {
@@ -119,7 +118,7 @@ class Player {
 			return tot;
 		}, 0);
 
-		const straggler = this.conf.stragglerAversion * arrayN(6).reduce((tot, v, i) => {
+		const straggler = this.conf.stragglerAversion * arrayN(5).reduce((tot, v, i) => {
 			const pieces = board[i];
 			if (pieces > 0) {
 				return tot + pieces
@@ -143,16 +142,19 @@ class Player {
 	}
 
 	move (roll1, roll2) {
-		let possibleBoards = this._move(roll1, roll2);
-		if (roll1 !== roll2) {
-			possibleBoards = possibleBoards.concat(this._move(roll2, roll1))
+		let possibleBoards;
+		if (roll1 === roll2) {
+			possibleBoards = this._move([roll1, roll1, roll1, roll1]);
+		} else {
+			possibleBoards = this._move([roll1, roll2]).concat(this._move([roll2, roll1]))
 		}
 
 		possibleBoards = Object.keys(possibleBoards.reduce((obj, val) => {
 			obj[val.join(',')] = true;
 			return obj;
-		}, {})).map(k => k.split(',').map(n => Number(n)))
-			.map(board => {
+		}, {}))
+			.map(key => {
+				const board = key.split(',').map(n => Number(n))
 				return {
 					board,
 					score: this.scoreBoard(board)

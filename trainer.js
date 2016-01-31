@@ -45,7 +45,7 @@ function evolve (parents, generations) {
 		foals = procreate(thoroughbreds[0], thoroughbreds[1]);
 		thoroughbreds = getWinners(foals);
 		console.log('thoroughbreds', thoroughbreds.map(t => {
-			return Object.keys(t).map(k => t[k]);
+			return Object.keys(t).map(k => Math.round(t[k], 2)).join(', ');
 		}))
 		const success = compete.playChallengers(thoroughbreds[0], randomPlayers(50), 7);
 
@@ -60,11 +60,11 @@ function randomPlayers(n) {
 	return arrayN(n)
 		.map(v => {
 			return confNames.reduce((obj, name) => {
-				if (name === 'aggressionPreference') {
-					obj[name] = Math.random() * 500;
-				} else {
+				// if (name === 'aggressionPreference') {
+				// 	obj[name] = Math.random() * 500;
+				// } else {
 					obj[name] = Math.random() * 10;
-				}
+				// }
 				return obj;
 			}, {})
 		})
