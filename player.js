@@ -127,11 +127,19 @@ class Player {
 			return tot;
 		}, 0);
 
-		// const sinbin = (this.conf.sinbinAversion * board[0])
+		const tactical = this.conf.attackMiddlePreference * [3,4,5,6,7].reduce((tot, v, i) => {
+			const pieces = board[i];
+			if (pieces > 0) {
+				return tot + pieces
+			}
+			return tot;
+		}, 0);
+
+		const aggression = -board[25] * this.conf.aggressionPreference;
 		// TODO
 		// const dynamism = some sense of how many squars you're attacking
 		//
-		return strength - (vulnerability + straggler);
+		return strength + tactical + aggression - (vulnerability + straggler);
 	}
 
 	move (roll1, roll2) {
