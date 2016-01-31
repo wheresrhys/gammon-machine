@@ -1,5 +1,9 @@
 'use strict';
 
+function arrayN (n) {
+	return Array(n).join('.').split('.').map(v => undefined);
+}
+
 function getOpenSquares (board) {
 	const places = board.reduce((arr, v, i) => {
 		if (v > -2 && (!board[0] || i < 7) && i !== 25) {
@@ -97,9 +101,9 @@ class Player {
 	scoreBoard (board) {
 		const vulnerability = board.reduce((tot, pieces, i) => {
 			if (pieces === 1) {
-				tot += this.conf.riskAverseness * i;
+				tot += this.conf.riskAversion * i;
 				if (i > 18) {
-					tot += this.conf.extremeRiskAverseness * i;
+					tot += this.conf.extremeRiskAversion * i;
 				}
 			}
 			return tot;
@@ -115,22 +119,22 @@ class Player {
 			return tot;
 		}, 0);
 
-		const pips = this.conf.pipAverseness * board.reduce((tot, pieces, i) => {
-			if (i === 0 || i === 25 || pieces === 0) {
-				return tot;
+		const straggler = this.conf.stragglerAversion * arrayN(6).reduce((tot, v, i) => {
+			const pieces = board[i];
+			if (pieces > 0) {
+				return tot + pieces
 			}
-			return tot + pieces * (pieces > 0 ? i : (25 - i));
+			return tot;
 		}, 0);
 
-		const sinbin = (this.conf.sinbinAverseness * board[0])
+		// const sinbin = (this.conf.sinbinAversion * board[0])
 		// TODO
 		// const dynamism = some sense of how many squars you're attacking
 		//
-		return strength - (vulnerability + sinbin + pips);
+		return strength - (vulnerability + straggler);
 	}
 
 	move (roll1, roll2) {
-		console.log(this.name, this.board[0]);
 		let possibleBoards = this._move(roll1, roll2);
 		if (roll1 !== roll2) {
 			possibleBoards = possibleBoards.concat(this._move(roll2, roll1))
@@ -154,10 +158,10 @@ class Player {
 			this.board = possibleBoards[0].board
 		}
 		if (this.finished()) {
-			return console.log(this.name + ' winner!')
+			return this.name;
 		}
 
-		this.overToOpponent(this.board);
+		return this.overToOpponent(this.board);
 	}
 
 	setOpponent (player) {
