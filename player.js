@@ -4,6 +4,23 @@ function arrayN (n) {
 	return Array(n).join('.').split('.').map(v => undefined);
 }
 
+const binomialDist = (function () {
+	const obj = {};
+	for (let i = 1, il = 6; i<=il; i++) {
+		for (let j = 1, jl = 6; j<=jl; j++) {
+			obj[j + i] = (obj[j + i] || 0) + 1;
+		}
+	}
+	return [undefined, undefined].concat(Object.keys(obj)
+		.map(k => {
+			return {i: Number(k), v: obj[k]}
+		})
+		.sort((o1, o2) => o1.i > o2.i ? -1 : 1)
+		.map(o =>  o.v / 36));
+
+}())
+
+
 function getOpenSquares (board) {
 	const places = board.reduce((arr, v, i) => {
 		if (v > -2 && (!board[0] || i < 7) && i !== 25) {
@@ -24,6 +41,33 @@ function getOccupiedSquares (board) {
 	}
 	return board.reduce((arr, v, i) => {
 		if (v > 0) {
+			arr.push(i);
+		}
+		return arr;
+	}, []);
+}
+
+function getEnemyBlockedSquares (board) {
+	return board.reduce((arr, v, i) => {
+		if (v < -1) {
+			arr.push(i);
+		}
+		return arr;
+	}, []);
+}
+
+function getEnemyVulnerableSquares (board) {
+	return board.reduce((arr, v, i) => {
+		if (i < 25 && v === 1) {
+			arr.push(i);
+		}
+		return arr;
+	}, []);
+}
+
+function getMutuallyOpenSquares (board) {
+	return board.reduce((arr, v, i) => {
+		if (i> 0 && i < 25 && (v === 0 || v === -1)) {
 			arr.push(i);
 		}
 		return arr;
@@ -134,11 +178,36 @@ class Player {
 			return tot;
 		}, 0);
 
-		const aggression = -board[25] * this.conf.aggressionPreference;
-		// TODO
-		// const dynamism = some sense of how many squars you're attacking
-		//
-		return strength + tactical + aggression - (vulnerability + straggler);
+		const aggression = -board[25] * this.conf.killPreference;
+
+		const blocked = getEnemyBlockedSquares(board);
+
+		const targets = getEnemyVulnerableSquares(board);
+
+		const available = getMutuallyOpenSquares(board);
+
+		const coverage = board.reduce((tot, pieces, i) => {
+			// can move without vulnerability
+			if (pieces === 1 || pieces === 3) {
+
+				for (let j = 2, jl = 12; j <= jl; j++) {
+					if (i + j > 24) return;
+					if (blocked.indexOf(i + j) > -1) {
+						tot -= this.conf.blockedAversion * binomialDist[j];
+					}
+					// const newVulnerable = pieces === 3 ? 1 : 0;
+					if (targets.indexOf(i + j) > -1) {
+						tot += this.conf.attackingPreference * binomialDist[j] ;
+					}
+					if (available.indexOf(i + j) > -1) {
+						tot += this.conf.mobilePreference * binomialDist[j];
+					}
+				}
+			}
+			return tot;
+		})
+
+		return strength + tactical + aggression + coverage - (vulnerability + straggler);
 	}
 
 	move (roll1, roll2) {
