@@ -1,0 +1,128 @@
+var _wheresrhys$gammon_machine$Game$getGame = function (a) {
+	return {
+		board: _elm_lang$core$Array$fromList(
+			{
+				ctor: '::',
+				_0: 2,
+				_1: {
+					ctor: '::',
+					_0: 0,
+					_1: {
+						ctor: '::',
+						_0: 0,
+						_1: {
+							ctor: '::',
+							_0: 0,
+							_1: {
+								ctor: '::',
+								_0: 0,
+								_1: {
+									ctor: '::',
+									_0: -5,
+									_1: {
+										ctor: '::',
+										_0: 0,
+										_1: {
+											ctor: '::',
+											_0: -3,
+											_1: {
+												ctor: '::',
+												_0: 0,
+												_1: {
+													ctor: '::',
+													_0: 0,
+													_1: {
+														ctor: '::',
+														_0: 0,
+														_1: {
+															ctor: '::',
+															_0: 5,
+															_1: {
+																ctor: '::',
+																_0: -5,
+																_1: {
+																	ctor: '::',
+																	_0: 0,
+																	_1: {
+																		ctor: '::',
+																		_0: 0,
+																		_1: {
+																			ctor: '::',
+																			_0: 0,
+																			_1: {
+																				ctor: '::',
+																				_0: 3,
+																				_1: {
+																					ctor: '::',
+																					_0: 0,
+																					_1: {
+																						ctor: '::',
+																						_0: 5,
+																						_1: {
+																							ctor: '::',
+																							_0: 0,
+																							_1: {
+																								ctor: '::',
+																								_0: 0,
+																								_1: {
+																									ctor: '::',
+																									_0: 0,
+																									_1: {
+																										ctor: '::',
+																										_0: 0,
+																										_1: {
+																											ctor: '::',
+																											_0: -2,
+																											_1: {ctor: '[]'}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}),
+		players: {
+			one: {complete: 0, blocked: 0},
+			two: {complete: 0, blocked: 0}
+		},
+		activePlayer: 'one',
+		dice: {
+			ctor: '::',
+			_0: 1,
+			_1: {
+				ctor: '::',
+				_0: 5,
+				_1: {ctor: '[]'}
+			}
+		}
+	};
+};
+var _wheresrhys$gammon_machine$Game$Player = F2(
+	function (a, b) {
+		return {complete: a, blocked: b};
+	});
+var _wheresrhys$gammon_machine$Game$Players = F2(
+	function (a, b) {
+		return {one: a, two: b};
+	});
+var _wheresrhys$gammon_machine$Game$Game = F4(
+	function (a, b, c, d) {
+		return {board: a, players: b, dice: c, activePlayer: d};
+	});

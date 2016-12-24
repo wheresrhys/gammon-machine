@@ -1,65 +1,73 @@
 import Html exposing (..)
 import Html.Events exposing (onClick)
+import Html.Attributes exposing (style)
 import Array exposing (Array)
+import Game exposing (..)
 
 main =
   Html.beginnerProgram { model = model, view = view, update = update }
 
 
 -- MODEL
-model : Array Int
+model : Game
 model =
-  Array.fromList [0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0]
+  getGame ""
 
 -- UPDATE
 
 type alias Msg = Int
 
-update : Msg -> Array Int -> Array Int
+update : Msg -> Game -> Game
 update msg model =
   model
 
 -- VIEW
 
-toBoard : Array Int -> Html msg
-toBoard list =
-  div []
-    [
-      div [] [
-        text ("player1 " ++ (toString (Array.get 0 list)))
-      ],
-      toHtmlList list,
-      div [] [
-        text ("player2 " ++ (toString (Array.get ((Array.length list) - 1) list)))
-      ]
-    ]
-
 toHtmlList : Array Int -> Html msg
 toHtmlList list =
-  ol [] (Array.toList (Array.indexedMap toLi (Array.slice 1 ((Array.length list) - 1) list)))
+  ol [] (Array.toList (Array.map toLi list))
 
-toLi : Int -> Int -> Html msg
-toLi s i =
-  li [] [
-    button [] [text ( toString s ++ toString i )]
+toLi : Int -> Html msg
+toLi s =
+  li [] (counters s)
+
+colour: Int -> Attribute msg
+colour i =
+  if i > 0
+  then
+    style [("background", "white"),("color","black")]
+  else
+    style [("background", "black"),("color","white")]
+
+counters: Int -> List (Html msg)
+counters i =
+  if (abs i) > 0
+  then
+    [ button [colour i] (Array.toList ( Array.initialize (abs i) (\n -> span [] [text "str "]) ) )]
+  else
+    [ button [] [text "empty column"]]
+
+toLeaderboard: Players -> Html msg
+toLeaderboard players =
+  ol [] [
+    toPlayer players.one 1,
+    toPlayer players.two -1
   ]
 
-view : Array Int -> Html Msg
+toPlayer: Player -> Int -> Html msg
+toPlayer p sign=
+  li [(colour sign)] [ text ((toString p.complete) ++ (toString p.blocked))]
+
+toDiceDisplay : List Int -> Html msg
+toDiceDisplay rolls =
+  ul [] (List.map (\i -> li [] [text (toString i)]) rolls)
+
+view : Game -> Html msg
 view model =
-  toBoard model
-
-
---ol [] (List.indexedMap toLi (List.tail (List.take (strings.length - 1) strings)))
-
-
----- VIEW
-
-
---view : Model -> Html Msg
---view model =
---  div []
---    [ button [ onClick Decrement ] [ text "-" ]
---    , div [] [ text (toString model) ]
---    , button [ onClick Increment ] [ text "+" ]
---    ]
-
+  div []
+    [
+      h1 [] [text "A backgammon game yo"],
+      toLeaderboard model.players,
+      toDiceDisplay model.dice,
+      toHtmlList model.board
+    ]

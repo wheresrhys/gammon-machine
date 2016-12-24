@@ -1,196 +1,162 @@
-var _wheresrhys$gammon_machine$Main$toLi = F2(
-	function (s, i) {
-		return A2(
-			_elm_lang$html$Html$li,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$button,
+var _wheresrhys$gammon_machine$Main$toDiceDisplay = function (rolls) {
+	return A2(
+		_elm_lang$html$Html$ul,
+		{ctor: '[]'},
+		A2(
+			_elm_lang$core$List$map,
+			function (i) {
+				return A2(
+					_elm_lang$html$Html$li,
 					{ctor: '[]'},
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html$text(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(s),
-								_elm_lang$core$Basics$toString(i))),
+							_elm_lang$core$Basics$toString(i)),
 						_1: {ctor: '[]'}
-					}),
+					});
+			},
+			rolls));
+};
+var _wheresrhys$gammon_machine$Main$colour = function (i) {
+	return (_elm_lang$core$Native_Utils.cmp(i, 0) > 0) ? _elm_lang$html$Html_Attributes$style(
+		{
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'background', _1: 'white'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'color', _1: 'black'},
+				_1: {ctor: '[]'}
+			}
+		}) : _elm_lang$html$Html_Attributes$style(
+		{
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'background', _1: 'black'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'color', _1: 'white'},
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _wheresrhys$gammon_machine$Main$counters = function (i) {
+	return (_elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$Basics$abs(i),
+		0) > 0) ? {
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _wheresrhys$gammon_machine$Main$colour(i),
+				_1: {ctor: '[]'}
+			},
+			_elm_lang$core$Array$toList(
+				A2(
+					_elm_lang$core$Array$initialize,
+					_elm_lang$core$Basics$abs(i),
+					function (n) {
+						return A2(
+							_elm_lang$html$Html$span,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('str '),
+								_1: {ctor: '[]'}
+							});
+					}))),
+		_1: {ctor: '[]'}
+	} : {
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$button,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('empty column'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {ctor: '[]'}
+	};
+};
+var _wheresrhys$gammon_machine$Main$toPlayer = F2(
+	function (p, sign) {
+		return A2(
+			_elm_lang$html$Html$li,
+			{
+				ctor: '::',
+				_0: _wheresrhys$gammon_machine$Main$colour(sign),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(p.complete),
+						_elm_lang$core$Basics$toString(p.blocked))),
 				_1: {ctor: '[]'}
 			});
 	});
+var _wheresrhys$gammon_machine$Main$toLeaderboard = function (players) {
+	return A2(
+		_elm_lang$html$Html$ol,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(_wheresrhys$gammon_machine$Main$toPlayer, players.one, 1),
+			_1: {
+				ctor: '::',
+				_0: A2(_wheresrhys$gammon_machine$Main$toPlayer, players.two, -1),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _wheresrhys$gammon_machine$Main$toLi = function (s) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		_wheresrhys$gammon_machine$Main$counters(s));
+};
 var _wheresrhys$gammon_machine$Main$toHtmlList = function (list) {
 	return A2(
 		_elm_lang$html$Html$ol,
 		{ctor: '[]'},
 		_elm_lang$core$Array$toList(
-			A2(
-				_elm_lang$core$Array$indexedMap,
-				_wheresrhys$gammon_machine$Main$toLi,
-				A3(
-					_elm_lang$core$Array$slice,
-					1,
-					_elm_lang$core$Array$length(list) - 1,
-					list))));
+			A2(_elm_lang$core$Array$map, _wheresrhys$gammon_machine$Main$toLi, list)));
 };
-var _wheresrhys$gammon_machine$Main$toBoard = function (list) {
+var _wheresrhys$gammon_machine$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
 		{
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$div,
+				_elm_lang$html$Html$h1,
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'player1 ',
-							_elm_lang$core$Basics$toString(
-								A2(_elm_lang$core$Array$get, 0, list)))),
+					_0: _elm_lang$html$Html$text('A backgammon game yo'),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
 				ctor: '::',
-				_0: _wheresrhys$gammon_machine$Main$toHtmlList(list),
+				_0: _wheresrhys$gammon_machine$Main$toLeaderboard(model.players),
 				_1: {
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'player2 ',
-									_elm_lang$core$Basics$toString(
-										A2(
-											_elm_lang$core$Array$get,
-											_elm_lang$core$Array$length(list) - 1,
-											list)))),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
+					_0: _wheresrhys$gammon_machine$Main$toDiceDisplay(model.dice),
+					_1: {
+						ctor: '::',
+						_0: _wheresrhys$gammon_machine$Main$toHtmlList(model.board),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});
-};
-var _wheresrhys$gammon_machine$Main$view = function (model) {
-	return _wheresrhys$gammon_machine$Main$toBoard(model);
 };
 var _wheresrhys$gammon_machine$Main$update = F2(
 	function (msg, model) {
 		return model;
 	});
-var _wheresrhys$gammon_machine$Main$model = _elm_lang$core$Array$fromList(
-	{
-		ctor: '::',
-		_0: 0,
-		_1: {
-			ctor: '::',
-			_0: 2,
-			_1: {
-				ctor: '::',
-				_0: 0,
-				_1: {
-					ctor: '::',
-					_0: 0,
-					_1: {
-						ctor: '::',
-						_0: 0,
-						_1: {
-							ctor: '::',
-							_0: 0,
-							_1: {
-								ctor: '::',
-								_0: -5,
-								_1: {
-									ctor: '::',
-									_0: 0,
-									_1: {
-										ctor: '::',
-										_0: -3,
-										_1: {
-											ctor: '::',
-											_0: 0,
-											_1: {
-												ctor: '::',
-												_0: 0,
-												_1: {
-													ctor: '::',
-													_0: 0,
-													_1: {
-														ctor: '::',
-														_0: 5,
-														_1: {
-															ctor: '::',
-															_0: -5,
-															_1: {
-																ctor: '::',
-																_0: 0,
-																_1: {
-																	ctor: '::',
-																	_0: 0,
-																	_1: {
-																		ctor: '::',
-																		_0: 0,
-																		_1: {
-																			ctor: '::',
-																			_0: 3,
-																			_1: {
-																				ctor: '::',
-																				_0: 0,
-																				_1: {
-																					ctor: '::',
-																					_0: 5,
-																					_1: {
-																						ctor: '::',
-																						_0: 0,
-																						_1: {
-																							ctor: '::',
-																							_0: 0,
-																							_1: {
-																								ctor: '::',
-																								_0: 0,
-																								_1: {
-																									ctor: '::',
-																									_0: 0,
-																									_1: {
-																										ctor: '::',
-																										_0: -2,
-																										_1: {
-																											ctor: '::',
-																											_0: 0,
-																											_1: {ctor: '[]'}
-																										}
-																									}
-																								}
-																							}
-																						}
-																					}
-																				}
-																			}
-																		}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
+var _wheresrhys$gammon_machine$Main$model = _wheresrhys$gammon_machine$Game$getGame('');
 var _wheresrhys$gammon_machine$Main$main = _elm_lang$html$Html$beginnerProgram(
 	{model: _wheresrhys$gammon_machine$Main$model, view: _wheresrhys$gammon_machine$Main$view, update: _wheresrhys$gammon_machine$Main$update})();
