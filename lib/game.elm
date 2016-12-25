@@ -3,15 +3,19 @@ import Array exposing (Array)
 
 type alias Player = {complete: Int, blocked: Int}
 
-type alias Players = { one: Player, two: Player }
+type alias Players = { white: Player, black: Player }
 
-type alias Game = { board: Array Int, players: Players, dice: List Int, activePlayer: String}
+type alias Game = {
+  board: Array Int,
+  players: Players,
+  activePlayer: String,
+  dice: List Int
+}
 
-getGame : a -> Game
-getGame a =
-  {
-    board = Array.fromList [2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2],
-    players = {one = {complete = 0, blocked = 0}, two = {complete = 0, blocked = 0}},
-    activePlayer = "one",
-    dice = [ 1 , 5 ]
-  }
+getGame : String -> Game
+getGame player =
+  Game
+    ([2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2] |> Array.fromList)
+    (Players (Player 0 0) (Player 0 0))
+    player
+    [ 1 , 5 ]

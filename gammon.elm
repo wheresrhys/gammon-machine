@@ -11,11 +11,11 @@ main =
 -- MODEL
 model : Game
 model =
-  getGame ""
+  getGame "white"
 
 -- UPDATE
 
-type alias Msg = Int
+type Msg = Roll | NewFace Int
 
 update : Msg -> Game -> Game
 update msg model =
@@ -50,8 +50,8 @@ counters i =
 toLeaderboard: Players -> Html msg
 toLeaderboard players =
   ol [] [
-    toPlayer players.one 1,
-    toPlayer players.two -1
+    toPlayer players.white 1,
+    toPlayer players.black -1
   ]
 
 toPlayer: Player -> Int -> Html msg

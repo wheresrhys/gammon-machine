@@ -1,6 +1,19 @@
-var _wheresrhys$gammon_machine$Game$getGame = function (a) {
-	return {
-		board: _elm_lang$core$Array$fromList(
+var _wheresrhys$gammon_machine$Game$Player = F2(
+	function (a, b) {
+		return {complete: a, blocked: b};
+	});
+var _wheresrhys$gammon_machine$Game$Players = F2(
+	function (a, b) {
+		return {white: a, black: b};
+	});
+var _wheresrhys$gammon_machine$Game$Game = F4(
+	function (a, b, c, d) {
+		return {board: a, players: b, activePlayer: c, dice: d};
+	});
+var _wheresrhys$gammon_machine$Game$getGame = function (player) {
+	return A4(
+		_wheresrhys$gammon_machine$Game$Game,
+		_elm_lang$core$Array$fromList(
 			{
 				ctor: '::',
 				_0: 2,
@@ -98,12 +111,12 @@ var _wheresrhys$gammon_machine$Game$getGame = function (a) {
 					}
 				}
 			}),
-		players: {
-			one: {complete: 0, blocked: 0},
-			two: {complete: 0, blocked: 0}
-		},
-		activePlayer: 'one',
-		dice: {
+		A2(
+			_wheresrhys$gammon_machine$Game$Players,
+			A2(_wheresrhys$gammon_machine$Game$Player, 0, 0),
+			A2(_wheresrhys$gammon_machine$Game$Player, 0, 0)),
+		player,
+		{
 			ctor: '::',
 			_0: 1,
 			_1: {
@@ -111,18 +124,5 @@ var _wheresrhys$gammon_machine$Game$getGame = function (a) {
 				_0: 5,
 				_1: {ctor: '[]'}
 			}
-		}
-	};
+		});
 };
-var _wheresrhys$gammon_machine$Game$Player = F2(
-	function (a, b) {
-		return {complete: a, blocked: b};
-	});
-var _wheresrhys$gammon_machine$Game$Players = F2(
-	function (a, b) {
-		return {one: a, two: b};
-	});
-var _wheresrhys$gammon_machine$Game$Game = F4(
-	function (a, b, c, d) {
-		return {board: a, players: b, dice: c, activePlayer: d};
-	});
