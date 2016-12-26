@@ -13,13 +13,13 @@ var _wheresrhys$gammon_machine$Game$Game = F4(
 var _wheresrhys$gammon_machine$Game$getGame = function (player) {
 	return A4(
 		_wheresrhys$gammon_machine$Game$Game,
-		_elm_lang$core$Array$fromList(
-			{
-				ctor: '::',
-				_0: 2,
-				_1: {
+		A2(
+			_elm_lang$core$Array$map,
+			_wheresrhys$gammon_machine$Slot$fromInteger,
+			_elm_lang$core$Array$fromList(
+				{
 					ctor: '::',
-					_0: 0,
+					_0: 2,
 					_1: {
 						ctor: '::',
 						_0: 0,
@@ -31,16 +31,16 @@ var _wheresrhys$gammon_machine$Game$getGame = function (player) {
 								_0: 0,
 								_1: {
 									ctor: '::',
-									_0: -5,
+									_0: 0,
 									_1: {
 										ctor: '::',
-										_0: 0,
+										_0: -5,
 										_1: {
 											ctor: '::',
-											_0: -3,
+											_0: 0,
 											_1: {
 												ctor: '::',
-												_0: 0,
+												_0: -3,
 												_1: {
 													ctor: '::',
 													_0: 0,
@@ -49,13 +49,13 @@ var _wheresrhys$gammon_machine$Game$getGame = function (player) {
 														_0: 0,
 														_1: {
 															ctor: '::',
-															_0: 5,
+															_0: 0,
 															_1: {
 																ctor: '::',
-																_0: -5,
+																_0: 5,
 																_1: {
 																	ctor: '::',
-																	_0: 0,
+																	_0: -5,
 																	_1: {
 																		ctor: '::',
 																		_0: 0,
@@ -64,16 +64,16 @@ var _wheresrhys$gammon_machine$Game$getGame = function (player) {
 																			_0: 0,
 																			_1: {
 																				ctor: '::',
-																				_0: 3,
+																				_0: 0,
 																				_1: {
 																					ctor: '::',
-																					_0: 0,
+																					_0: 3,
 																					_1: {
 																						ctor: '::',
-																						_0: 5,
+																						_0: 0,
 																						_1: {
 																							ctor: '::',
-																							_0: 0,
+																							_0: 5,
 																							_1: {
 																								ctor: '::',
 																								_0: 0,
@@ -85,8 +85,12 @@ var _wheresrhys$gammon_machine$Game$getGame = function (player) {
 																										_0: 0,
 																										_1: {
 																											ctor: '::',
-																											_0: -2,
-																											_1: {ctor: '[]'}
+																											_0: 0,
+																											_1: {
+																												ctor: '::',
+																												_0: -2,
+																												_1: {ctor: '[]'}
+																											}
 																										}
 																									}
 																								}
@@ -109,8 +113,7 @@ var _wheresrhys$gammon_machine$Game$getGame = function (player) {
 							}
 						}
 					}
-				}
-			}),
+				})),
 		A2(
 			_wheresrhys$gammon_machine$Game$Players,
 			A2(_wheresrhys$gammon_machine$Game$Player, 0, 0),
