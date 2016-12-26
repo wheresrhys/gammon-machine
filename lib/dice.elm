@@ -32,6 +32,7 @@ init =
 type Msg
   = Roll
   | NewFace (Int, Int)
+  | Used Int
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -46,7 +47,8 @@ update msg model =
         (Model [Tuple.first newFace, Tuple.first newFace, Tuple.first newFace, Tuple.first newFace], Cmd.none)
       else
         (Model [Tuple.first newFace, Tuple.second newFace], Cmd.none)
-
+    Used face ->
+      (Model [face], Cmd.none)
 
 
 
@@ -61,10 +63,13 @@ subscriptions model =
 
 -- VIEW
 
+face : Int -> Html Msg
+face int =
+  button [ onClick (Used int)] [ int |> toString |> text ]
 
 view : Model -> Html Msg
 view model =
   div []
-    [ h1 [] (List.map (text << toString) model.faces)
+    [ h1 [] (List.map face model.faces)
     , button [ onClick Roll ] [ text "Roll" ]
     ]
