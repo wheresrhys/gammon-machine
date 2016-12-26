@@ -12,7 +12,7 @@ main =
 -- MODEL
 model : Game.Game
 model =
-  Game.getGame "white"
+  Game.getGame Slot.White
 
 -- UPDATE
 
@@ -28,36 +28,16 @@ toBoard : Array Slot.Slot -> Html msg
 toBoard list =
   ol [] (Array.toList (Array.map Slot.view list))
 
-toLi : Int -> Html msg
-toLi s =
-  li [] (counters s)
-
-colour: Int -> Attribute msg
-colour i =
-  if i > 0
-  then
-    style [("background", "white"),("color","black")]
-  else
-    style [("background", "black"),("color","white")]
-
-counters: Int -> List (Html msg)
-counters i =
-  if (abs i) > 0
-  then
-    [ button [colour i] (Array.toList ( Array.initialize (abs i) (\n -> span [] [text "str "]) ) )]
-  else
-    [ button [] [text "empty column"]]
-
 toLeaderboard: Game.Players -> Html msg
 toLeaderboard players =
   ol [] [
-    toPlayer players.white 1,
-    toPlayer players.black -1
+    toPlayer players.white Slot.White,
+    toPlayer players.black Slot.Black
   ]
 
-toPlayer: Game.Player -> Int -> Html msg
-toPlayer p sign=
-  li [(colour sign)] [ text ((toString p.complete) ++ (toString p.blocked))]
+toPlayer: Game.Player -> Slot.Color -> Html msg
+toPlayer p color=
+  li [(Slot.colorStyle color)] [ text ((toString p.complete) ++ (toString p.blocked))]
 
 toDiceDisplay : List Int -> Html msg
 toDiceDisplay rolls =

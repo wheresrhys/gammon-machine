@@ -1,4 +1,4 @@
-module Slot exposing (Slot, fromInteger, view)
+module Slot exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (onClick)
@@ -7,15 +7,20 @@ import Array exposing (Array)
 
 -- MODEL
 
-type alias Slot = { color: String, number: Int, active: Bool}
+type alias White = String
+type alias Black = String
+
+type Color = Black | White
+
+type alias Slot = { color: Color, number: Int, active: Bool}
 
 fromInteger : Int -> Slot
 fromInteger i =
   if i > 0
   then
-    Slot "white" i False
+    Slot White i False
   else
-    Slot "black" -i False
+    Slot Black -i False
 
 -- UPDATE
 
@@ -27,19 +32,19 @@ update msg model =
 
 -- VIEW
 
-toLi : String -> Int -> Html msg
+toLi : Color -> Int -> Html msg
 toLi color s =
   li [] (counters color s)
 
-colorStyle: String -> Attribute msg
+colorStyle: Color -> Attribute msg
 colorStyle color =
-  if color == "white"
-  then
-    style [("background", "white"),("color","black")]
-  else
-    style [("background", "black"),("color","white")]
+  case color of
+    White ->
+      style [("background", "white"),("color","black")]
+    Black ->
+      style [("background", "black"),("color","white")]
 
-counters: String -> Int -> List (Html msg)
+counters: Color -> Int -> List (Html msg)
 counters color i =
   if i > 0
   then

@@ -1,23 +1,28 @@
 var _wheresrhys$gammon_machine$Slot$colorStyle = function (color) {
-	return _elm_lang$core$Native_Utils.eq(color, 'white') ? _elm_lang$html$Html_Attributes$style(
-		{
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'background', _1: 'white'},
-			_1: {
+	var _p0 = color;
+	if (_p0.ctor === 'White') {
+		return _elm_lang$html$Html_Attributes$style(
+			{
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'color', _1: 'black'},
-				_1: {ctor: '[]'}
-			}
-		}) : _elm_lang$html$Html_Attributes$style(
-		{
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'background', _1: 'black'},
-			_1: {
+				_0: {ctor: '_Tuple2', _0: 'background', _1: 'white'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'color', _1: 'black'},
+					_1: {ctor: '[]'}
+				}
+			});
+	} else {
+		return _elm_lang$html$Html_Attributes$style(
+			{
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'color', _1: 'white'},
-				_1: {ctor: '[]'}
-			}
-		});
+				_0: {ctor: '_Tuple2', _0: 'background', _1: 'black'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'color', _1: 'white'},
+					_1: {ctor: '[]'}
+				}
+			});
+	}
 };
 var _wheresrhys$gammon_machine$Slot$counters = F2(
 	function (color, i) {
@@ -76,8 +81,10 @@ var _wheresrhys$gammon_machine$Slot$Slot = F3(
 	function (a, b, c) {
 		return {color: a, number: b, active: c};
 	});
+var _wheresrhys$gammon_machine$Slot$White = {ctor: 'White'};
+var _wheresrhys$gammon_machine$Slot$Black = {ctor: 'Black'};
 var _wheresrhys$gammon_machine$Slot$fromInteger = function (i) {
-	return (_elm_lang$core$Native_Utils.cmp(i, 0) > 0) ? A3(_wheresrhys$gammon_machine$Slot$Slot, 'white', i, false) : A3(_wheresrhys$gammon_machine$Slot$Slot, 'black', 0 - i, false);
+	return (_elm_lang$core$Native_Utils.cmp(i, 0) > 0) ? A3(_wheresrhys$gammon_machine$Slot$Slot, _wheresrhys$gammon_machine$Slot$White, i, false) : A3(_wheresrhys$gammon_machine$Slot$Slot, _wheresrhys$gammon_machine$Slot$Black, 0 - i, false);
 };
 var _wheresrhys$gammon_machine$Slot$NewFace = function (a) {
 	return {ctor: 'NewFace', _0: a};
