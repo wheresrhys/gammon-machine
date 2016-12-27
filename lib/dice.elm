@@ -1,34 +1,20 @@
+module Dice exposing (..)
 import Html exposing (..)
 import Html.Events exposing (..)
 import Random
 
-main =
-  Html.program
-    { init = init
-    , view = view
-    , update = update
-    , subscriptions = subscriptions
-    }
-
-
 
 -- MODEL
-
-
 type alias Model =
   { faces : List Int
   }
 
 
-init : (Model, Cmd Msg)
-init =
-  (Model [1, 2], Cmd.none)
-
-
+initialModel : Model
+initialModel =
+  Model []
 
 -- UPDATE
-
-
 type Msg
   = Roll
   | NewFace (Int, Int)
@@ -51,18 +37,7 @@ update msg model =
       (Model [face], Cmd.none)
 
 
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-  Sub.none
-
-
-
 -- VIEW
-
 face : Int -> Html Msg
 face int =
   button [ onClick (Used int)] [ int |> toString |> text ]
@@ -70,6 +45,7 @@ face int =
 view : Model -> Html Msg
 view model =
   div []
-    [ h1 [] (List.map face model.faces)
-    , button [ onClick Roll ] [ text "Roll" ]
+    [
+      h1 [] (List.map face model.faces),
+      button [ onClick Roll ] [ text "Roll" ]
     ]

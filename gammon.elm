@@ -1,54 +1,56 @@
 import Html exposing (..)
-import Html.Events exposing (onClick)
-import Html.Attributes exposing (style)
-import Array exposing (Array)
-import Game
-import Slot
-
-main =
-  Html.beginnerProgram { model = model, view = view, update = update }
-
+import Dice
 
 -- MODEL
-model : Game.Game
-model =
-  Game.getGame Slot.White
+type alias AppModel =
+  {
+    diceModel : Dice.Model
+  }
+
+initialModel : AppModel
+initialModel =
+  {
+    diceModel = Dice.initialModel
+  }
+
+init : ( AppModel, Cmd Msg )
+init =
+    ( initialModel, Cmd.none )
 
 -- UPDATE
+type Msg
+    = DiceMsg Dice.Msg
 
-type Msg = Roll | NewFace Int
-
-update : Msg -> Game.Game -> Game.Game
+update : Msg -> AppModel -> (AppModel, Cmd Msg)
 update msg model =
-  model
+  case msg of
+    DiceMsg subMsg ->
+      let
+        ( updatedDiceModel, diceCmd ) =
+          Dice.update subMsg model.diceModel
+      in
+        ( { model | diceModel = updatedDiceModel }, Cmd.map DiceMsg diceCmd )
 
 -- VIEW
-
-toBoard : Array Slot.Slot -> Html msg
-toBoard list =
-  ol [] (Array.toList (Array.map Slot.view list))
-
-toLeaderboard: Game.Players -> Html msg
-toLeaderboard players =
-  ol [] [
-    toPlayer players.white Slot.White,
-    toPlayer players.black Slot.Black
-  ]
-
-toPlayer: Game.Player -> Slot.Color -> Html msg
-toPlayer p color=
-  li [(Slot.colorStyle color)] [ text ((toString p.complete) ++ (toString p.blocked))]
-
-toDiceDisplay : List Int -> Html msg
-toDiceDisplay rolls =
-  ul [] (List.map (\i -> li [] [text (toString i)]) rolls)
-
-view : Game.Game -> Html msg
+view : AppModel -> Html Msg
 view model =
   div []
     [
       h1 [] [text "A backgammon game yo"],
-      toLeaderboard model.players,
-      toDiceDisplay model.dice,
-      toBoard model.board
+      Html.map DiceMsg (Dice.view model.diceModel)
     ]
+
+-- SUBSCRIPTIONS
+subscriptions : AppModel -> Sub Msg
+subscriptions model =
+    Sub.none
+
+-- APP
+main : Program Never AppModel Msg
+main =
+    program
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }

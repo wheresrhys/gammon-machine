@@ -1,114 +1,28 @@
 var _wheresrhys$gammon_machine$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _wheresrhys$gammon_machine$Main$Model = function (a) {
-	return {faces: a};
+var _wheresrhys$gammon_machine$Main$initialModel = {diceModel: _wheresrhys$gammon_machine$Dice$initialModel};
+var _wheresrhys$gammon_machine$Main$init = {ctor: '_Tuple2', _0: _wheresrhys$gammon_machine$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _wheresrhys$gammon_machine$Main$AppModel = function (a) {
+	return {diceModel: a};
 };
-var _wheresrhys$gammon_machine$Main$init = {
-	ctor: '_Tuple2',
-	_0: _wheresrhys$gammon_machine$Main$Model(
-		{
-			ctor: '::',
-			_0: 1,
-			_1: {
-				ctor: '::',
-				_0: 2,
-				_1: {ctor: '[]'}
-			}
-		}),
-	_1: _elm_lang$core$Platform_Cmd$none
-};
-var _wheresrhys$gammon_machine$Main$Used = function (a) {
-	return {ctor: 'Used', _0: a};
-};
-var _wheresrhys$gammon_machine$Main$face = function ($int) {
-	return A2(
-		_elm_lang$html$Html$button,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Events$onClick(
-				_wheresrhys$gammon_machine$Main$Used($int)),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html$text(
-				_elm_lang$core$Basics$toString($int)),
-			_1: {ctor: '[]'}
-		});
-};
-var _wheresrhys$gammon_machine$Main$NewFace = function (a) {
-	return {ctor: 'NewFace', _0: a};
+var _wheresrhys$gammon_machine$Main$DiceMsg = function (a) {
+	return {ctor: 'DiceMsg', _0: a};
 };
 var _wheresrhys$gammon_machine$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'Roll':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_wheresrhys$gammon_machine$Main$NewFace,
-						A2(
-							_elm_lang$core$Random$pair,
-							A2(_elm_lang$core$Random$int, 1, 6),
-							A2(_elm_lang$core$Random$int, 1, 6)))
-				};
-			case 'NewFace':
-				var _p1 = _p0._0;
-				return _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Tuple$first(_p1),
-					_elm_lang$core$Tuple$second(_p1)) ? {
-					ctor: '_Tuple2',
-					_0: _wheresrhys$gammon_machine$Main$Model(
-						{
-							ctor: '::',
-							_0: _elm_lang$core$Tuple$first(_p1),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$core$Tuple$first(_p1),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$core$Tuple$first(_p1),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$core$Tuple$first(_p1),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				} : {
-					ctor: '_Tuple2',
-					_0: _wheresrhys$gammon_machine$Main$Model(
-						{
-							ctor: '::',
-							_0: _elm_lang$core$Tuple$first(_p1),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$core$Tuple$second(_p1),
-								_1: {ctor: '[]'}
-							}
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _wheresrhys$gammon_machine$Main$Model(
-						{
-							ctor: '::',
-							_0: _p0._0,
-							_1: {ctor: '[]'}
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
+		var _p1 = A2(_wheresrhys$gammon_machine$Dice$update, _p0._0, model.diceModel);
+		var updatedDiceModel = _p1._0;
+		var diceCmd = _p1._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{diceModel: updatedDiceModel}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _wheresrhys$gammon_machine$Main$DiceMsg, diceCmd)
+		};
 	});
-var _wheresrhys$gammon_machine$Main$Roll = {ctor: 'Roll'};
 var _wheresrhys$gammon_machine$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -118,21 +32,17 @@ var _wheresrhys$gammon_machine$Main$view = function (model) {
 			_0: A2(
 				_elm_lang$html$Html$h1,
 				{ctor: '[]'},
-				A2(_elm_lang$core$List$map, _wheresrhys$gammon_machine$Main$face, model.faces)),
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('A backgammon game yo'),
+					_1: {ctor: '[]'}
+				}),
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$button,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_wheresrhys$gammon_machine$Main$Roll),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('Roll'),
-						_1: {ctor: '[]'}
-					}),
+					_elm_lang$html$Html$map,
+					_wheresrhys$gammon_machine$Main$DiceMsg,
+					_wheresrhys$gammon_machine$Dice$view(model.diceModel)),
 				_1: {ctor: '[]'}
 			}
 		});
