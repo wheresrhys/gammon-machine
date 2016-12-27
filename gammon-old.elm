@@ -25,9 +25,6 @@ update msg model =
 
 -- VIEW
 
-toBoard : Array Slot.Slot -> Html msg
-toBoard list =
-  ol [] (Array.toList (Array.map Slot.view list))
 
 toLeaderboard: Game.Players -> Html msg
 toLeaderboard players =

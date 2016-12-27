@@ -12,46 +12,38 @@ type alias Black = String
 
 type Color = Black | White
 
-type alias Slot = { color: Color, number: Int, active: Bool}
+type alias Model = { color: Color, position: Int, counters: Int, isActive: Bool}
 
-fromInteger : Int -> Slot
-fromInteger i =
-  if i > 0
+fromInteger : (Int, Int) -> Model
+fromInteger tuple =
+  let
+    index = Tuple.first tuple
+    counters = Tuple.second tuple
+  in
+  if counters > 0
   then
-    Slot White i False
+    Model White index counters False
   else
-    Slot Black -i False
-
--- UPDATE
-
-type Msg = Roll | NewFace Int
-
-update : Msg -> Slot -> Slot
-update msg model =
-  model
+    Model Black index -counters False
 
 -- VIEW
 
-toLi : Color -> Int -> Html msg
-toLi color s =
-  li [] (counters color s)
-
-colorStyle: Color -> Attribute msg
-colorStyle color =
+colorStyle: Color -> Bool -> Attribute a
+colorStyle color isActive =
   case color of
     White ->
-      style [("background", "white"),("color","black")]
+      style [("background", "white"),("color","black"),("border-color", if isActive == True then "red" else "blue")]
     Black ->
-      style [("background", "black"),("color","white")]
+      style [("background", "black"),("color","white"),("border-color", if isActive == True then "red" else "blue")]
 
-counters: Color -> Int -> List (Html msg)
-counters color i =
-  if i > 0
+counters: (Int -> a) -> Model -> List (Html a)
+counters handler slot =
+  if slot.counters > 0
   then
-    [ button [colorStyle color] (Array.toList ( Array.initialize (abs i) (\n -> span [] [text "str "]) ) )]
+    [ button [colorStyle slot.color slot.isActive, onClick (handler slot.position)] (Array.toList ( Array.initialize slot.counters (\n -> span [] [text "str "]) ) )]
   else
-    [ button [] [text "empty column"]]
+    [ button [onClick (handler slot.position)] [text "empty column"]]
 
-view : Slot -> Html msg
-view slot =
-  toLi slot.color slot.number
+view : (Int -> a) -> Model -> Html a
+view handler slot =
+  li [] (counters handler slot)

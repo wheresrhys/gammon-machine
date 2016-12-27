@@ -47,18 +47,21 @@ removeFaces faces =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+
     Roll ->
       (model, Random.generate NewFace (Random.pair (Random.int 1 6) (Random.int 1 6)))
 
     NewFace newFace ->
-      if (Tuple.first newFace == Tuple.second newFace)
-      then
-        let
-          face = Tuple.first newFace
-        in
-          (Model [face, face, face, face], Cmd.none)
-      else
-        (Model [Tuple.first newFace, Tuple.second newFace], Cmd.none)
+      let
+        face1 = Tuple.first newFace
+        face2 = Tuple.second newFace
+      in
+        if (face1 == face2)
+        then
+          (Model [face1, face1, face1, face1], Cmd.none)
+        else
+          (Model [face1, face2], Cmd.none)
+
     DiceUsed faces ->
       ((faces, model.faces) |> removeFaces |> Tuple.second |> Model, Cmd.none)
 
