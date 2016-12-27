@@ -28,24 +28,38 @@ type Msg
 
 moveIfValid : Model -> Int -> Model
 moveIfValid model pos =
-  { model |
-    slots = model.slots
-      |> modifySlot pos (\s -> {s | counters = 3, color = Slot.White})
-      |> modifySlot model.activeSlot (\s -> {s | counters = 2, color = Slot.Black}),
-    activeSlot = -1
-  }
+  let
+    fromSlot = getSlot model.activeSlot model.slots
+  in
+    { model |
+      slots = model.slots
+        |> modifySlot pos (\s -> {s |
+          counters = s.counters + 1,
+          color = fromSlot.color
+          })
+        |> modifySlot model.activeSlot (\s -> {s |
+          counters = s.counters - 1,
+          color = if s.counters < 2 then Slot.Neutral else fromSlot.color
+          }),
+      activeSlot = -1
+    } |> deactivateSlots
+
+getSlot : Int -> Array Slot.Model -> Slot.Model
+getSlot pos slots=
+  slots
+    |> Array.get pos
+    |> Maybe.withDefault (Slot.fromInteger (0, -1))
 
 modifySlot : Int -> (Slot.Model -> Slot.Model) -> Array Slot.Model -> Array Slot.Model
 modifySlot pos action slots=
   Array.set pos (
     slots
-    |> Array.get pos
-    |> Maybe.withDefault (Slot.fromInteger (0, -1))
+    |> getSlot pos
     |> action
   ) slots
 
-deactivateSlot : Model -> Model
-deactivateSlot model =
+deactivateSlots : Model -> Model
+deactivateSlots model =
   { model |
     activeSlot = -1,
     slots = model.slots |> Array.indexedMap (\i slot -> {slot | isActive = False}) }
@@ -56,7 +70,7 @@ update msg model =
     SlotClick pos ->
       if (model.activeSlot == pos)
       then
-        deactivateSlot model
+        deactivateSlots model
       else
         -- if no active slot
         if (model.activeSlot == -1)
