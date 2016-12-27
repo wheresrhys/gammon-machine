@@ -26,37 +26,52 @@ initialModel =
 type Msg
   = SlotClick Int
 
---getSlot: Int -> Slot.Model
---getSlot pos =
---  let maybeSlot = Array.get pos
---  in
---  case maybeSlot of
---    Just slot ->
---      slot
---    Nothing ->
---      Debug.crash (toString "pos") ++ " is not a valid backgammon board slot"
+moveIfValid : Model -> Int -> Model
+moveIfValid model pos =
+  { model |
+    slots = model.slots
+      |> modifySlot pos (\s -> {s | counters = 3, color = Slot.White})
+      |> modifySlot model.activeSlot (\s -> {s | counters = 2, color = Slot.Black}),
+    activeSlot = -1
+  }
 
-modifySlot pos slots =
+modifySlot : Int -> (Slot.Model -> Slot.Model) -> Array Slot.Model -> Array Slot.Model
+modifySlot pos action slots=
   Array.set pos (
     slots
     |> Array.get pos
     |> Maybe.withDefault (Slot.fromInteger (0, -1))
-    |> (\slot -> {slot | isActive = True})
+    |> action
   ) slots
+
+deactivateSlot : Model -> Model
+deactivateSlot model =
+  { model |
+    activeSlot = -1,
+    slots = model.slots |> Array.indexedMap (\i slot -> {slot | isActive = False}) }
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     SlotClick pos ->
-      if (model.activeSlot == pos && (model.slots |> Array.get pos |> Maybe.map (\slot -> if slot.counters > 0 then True else False) |> Maybe.withDefault False))
+      if (model.activeSlot == pos)
       then
-        { model |
-          activeSlot = -1,
-          slots = model.slots |> Array.indexedMap (\i slot -> {slot | isActive = False}) }
+        deactivateSlot model
       else
-        { model |
-          activeSlot = pos,
-          slots = model.slots |> Array.indexedMap (\i slot -> if i == pos then {slot | isActive = True} else {slot | isActive = False}) }
+        -- if no active slot
+        if (model.activeSlot == -1)
+        then
+          -- if activatable
+          if (model.slots |> Array.get pos |> Maybe.map (\slot -> if slot.counters > 0 then True else False) |> Maybe.withDefault False)
+          then
+            { model |
+              activeSlot = pos,
+              slots = model.slots |> Array.indexedMap (\i slot -> if i == pos then {slot | isActive = True} else {slot | isActive = False}) }
+          else
+            model
+        else
+          -- try moving
+          moveIfValid model pos
 
 -- VIEW
 view : Model -> Html Msg
