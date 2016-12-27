@@ -18,8 +18,31 @@ initialModel =
 type Msg
   = Roll
   | NewFace (Int, Int)
-  | Used Int
+  | DiceUsed (List Int)
 
+
+removeItem : Maybe Int -> List Int -> List Int
+removeItem maybeInt list =
+  case maybeInt of
+    Just int ->
+      List.concat [
+        list |> List.filter (\n -> n == int) |> (List.drop 1),
+        list |> List.filter (\n -> n /= int)
+      ]
+    Nothing ->
+      list
+
+removeFaces : (List Int, List Int) -> (List Int, List Int)
+removeFaces faces =
+  let
+    usedFaces = Tuple.first faces
+    allFaces = Tuple.second faces
+  in
+    if (List.length usedFaces > 0)
+    then
+      (usedFaces |> List.drop 1 , allFaces |> removeItem (usedFaces |> List.head))
+    else
+      (usedFaces, allFaces)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -30,17 +53,20 @@ update msg model =
     NewFace newFace ->
       if (Tuple.first newFace == Tuple.second newFace)
       then
-        (Model [Tuple.first newFace, Tuple.first newFace, Tuple.first newFace, Tuple.first newFace], Cmd.none)
+        let
+          face = Tuple.first newFace
+        in
+          (Model [face, face, face, face], Cmd.none)
       else
         (Model [Tuple.first newFace, Tuple.second newFace], Cmd.none)
-    Used face ->
-      (Model [face], Cmd.none)
+    DiceUsed faces ->
+      ((faces, model.faces) |> removeFaces |> Tuple.second |> Model, Cmd.none)
 
 
 -- VIEW
 face : Int -> Html Msg
 face int =
-  button [ onClick (Used int)] [ int |> toString |> text ]
+  button [ onClick (DiceUsed [int])] [ int |> toString |> text ]
 
 view : Model -> Html Msg
 view model =

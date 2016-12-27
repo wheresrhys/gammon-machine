@@ -1,10 +1,56 @@
+var _wheresrhys$gammon_machine$Dice$removeItem = F2(
+	function (maybeInt, list) {
+		var _p0 = maybeInt;
+		if (_p0.ctor === 'Just') {
+			var _p1 = _p0._0;
+			return _elm_lang$core$List$concat(
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$core$List$drop,
+						1,
+						A2(
+							_elm_lang$core$List$filter,
+							function (n) {
+								return _elm_lang$core$Native_Utils.eq(n, _p1);
+							},
+							list)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$core$List$filter,
+							function (n) {
+								return !_elm_lang$core$Native_Utils.eq(n, _p1);
+							},
+							list),
+						_1: {ctor: '[]'}
+					}
+				});
+		} else {
+			return list;
+		}
+	});
+var _wheresrhys$gammon_machine$Dice$removeFaces = function (faces) {
+	var allFaces = _elm_lang$core$Tuple$second(faces);
+	var usedFaces = _elm_lang$core$Tuple$first(faces);
+	return (_elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(usedFaces),
+		0) > 0) ? {
+		ctor: '_Tuple2',
+		_0: A2(_elm_lang$core$List$drop, 1, usedFaces),
+		_1: A2(
+			_wheresrhys$gammon_machine$Dice$removeItem,
+			_elm_lang$core$List$head(usedFaces),
+			allFaces)
+	} : {ctor: '_Tuple2', _0: usedFaces, _1: allFaces};
+};
 var _wheresrhys$gammon_machine$Dice$Model = function (a) {
 	return {faces: a};
 };
 var _wheresrhys$gammon_machine$Dice$initialModel = _wheresrhys$gammon_machine$Dice$Model(
 	{ctor: '[]'});
-var _wheresrhys$gammon_machine$Dice$Used = function (a) {
-	return {ctor: 'Used', _0: a};
+var _wheresrhys$gammon_machine$Dice$DiceUsed = function (a) {
+	return {ctor: 'DiceUsed', _0: a};
 };
 var _wheresrhys$gammon_machine$Dice$face = function ($int) {
 	return A2(
@@ -12,7 +58,12 @@ var _wheresrhys$gammon_machine$Dice$face = function ($int) {
 		{
 			ctor: '::',
 			_0: _elm_lang$html$Html_Events$onClick(
-				_wheresrhys$gammon_machine$Dice$Used($int)),
+				_wheresrhys$gammon_machine$Dice$DiceUsed(
+					{
+						ctor: '::',
+						_0: $int,
+						_1: {ctor: '[]'}
+					})),
 			_1: {ctor: '[]'}
 		},
 		{
@@ -27,8 +78,8 @@ var _wheresrhys$gammon_machine$Dice$NewFace = function (a) {
 };
 var _wheresrhys$gammon_machine$Dice$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'Roll':
 				return {
 					ctor: '_Tuple2',
@@ -42,53 +93,56 @@ var _wheresrhys$gammon_machine$Dice$update = F2(
 							A2(_elm_lang$core$Random$int, 1, 6)))
 				};
 			case 'NewFace':
-				var _p1 = _p0._0;
-				return _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Tuple$first(_p1),
-					_elm_lang$core$Tuple$second(_p1)) ? {
-					ctor: '_Tuple2',
-					_0: _wheresrhys$gammon_machine$Dice$Model(
-						{
-							ctor: '::',
-							_0: _elm_lang$core$Tuple$first(_p1),
-							_1: {
+				var _p3 = _p2._0;
+				if (_elm_lang$core$Native_Utils.eq(
+					_elm_lang$core$Tuple$first(_p3),
+					_elm_lang$core$Tuple$second(_p3))) {
+					var face = _elm_lang$core$Tuple$first(_p3);
+					return {
+						ctor: '_Tuple2',
+						_0: _wheresrhys$gammon_machine$Dice$Model(
+							{
 								ctor: '::',
-								_0: _elm_lang$core$Tuple$first(_p1),
+								_0: face,
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$core$Tuple$first(_p1),
+									_0: face,
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$core$Tuple$first(_p1),
-										_1: {ctor: '[]'}
+										_0: face,
+										_1: {
+											ctor: '::',
+											_0: face,
+											_1: {ctor: '[]'}
+										}
 									}
 								}
-							}
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				} : {
-					ctor: '_Tuple2',
-					_0: _wheresrhys$gammon_machine$Dice$Model(
-						{
-							ctor: '::',
-							_0: _elm_lang$core$Tuple$first(_p1),
-							_1: {
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _wheresrhys$gammon_machine$Dice$Model(
+							{
 								ctor: '::',
-								_0: _elm_lang$core$Tuple$second(_p1),
-								_1: {ctor: '[]'}
-							}
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+								_0: _elm_lang$core$Tuple$first(_p3),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$core$Tuple$second(_p3),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 			default:
 				return {
 					ctor: '_Tuple2',
 					_0: _wheresrhys$gammon_machine$Dice$Model(
-						{
-							ctor: '::',
-							_0: _p0._0,
-							_1: {ctor: '[]'}
-						}),
+						_elm_lang$core$Tuple$second(
+							_wheresrhys$gammon_machine$Dice$removeFaces(
+								{ctor: '_Tuple2', _0: _p2._0, _1: model.faces}))),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
