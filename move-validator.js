@@ -1,17 +1,13 @@
 const START_POSITION = [0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0];
-const START_MOVES = [...Array(60)].map(x => Math.random());
-
-
-Hmmm... can I redo this so that it just picks a square and tries to move it, be it valid or not??
-Woudl prob be simpler
+const START_MOVES = [...Array(24 * 4)].map(x => Math.random());
 
 function invertBoard (board){
 	return  [...board].reverse().map(val => -1 * val)
 }
 
-function orderPiecePreferenceForMove (probabilities) {
+function orderPositionPreferenceForMove (probabilities) {
 	return probabilities
-		.map((prob, piece) => ({prob, piece}))
+		.map((prob, position) => ({prob, position}))
 		.sort(({prob: prob1}, {prob: prob2}) => {
 			if (prob1 === prob2) return 0
 			return prob1 > prob2 ? -1 : 1;
@@ -20,10 +16,10 @@ function orderPiecePreferenceForMove (probabilities) {
 
 function structureMoves (moves) {
 	return [
-		orderPiecePreferenceForMove(moves.slice(0, 15)),
-		orderPiecePreferenceForMove(moves.slice(15, 30)),
-		orderPiecePreferenceForMove(moves.slice(30, 45)),
-		orderPiecePreferenceForMove(moves.slice(45, 60))
+		orderPositionPreferenceForMove(moves.slice(0, 25)),
+		orderPositionPreferenceForMove(moves.slice(25, 50)),
+		orderPositionPreferenceForMove(moves.slice(50, 75)),
+		orderPositionPreferenceForMove(moves.slice(75, 100))
 	]
 }
 
@@ -42,7 +38,9 @@ function getOrderedPieces (board) {
 
 function validateMove (startPosition, board, roll) {
 	const endPosition = startPosition + roll
-	if (endPosition < 25) {
+	if (board[0] > 1 && startPosition > 0) {
+		return false
+	} else if (endPosition < 25) {
 		if (board[endPosition] < -1) return false;
 	} else {
 		// double check that this actually tests that everything is in the end zone.
@@ -59,24 +57,13 @@ function validateMove (startPosition, board, roll) {
 	return true;
 }
 
-function movePiece (move, board, orderedPieces, roll) {
+function movePiece (move, board, roll) {
 	if (roll === 0) return undefined
-	// consider what to do when no valid moves
 	while (move.length) {
-		const pieceToMove = move.shift().piece;
-		const startPosition = orderedPieces[pieceToMove]
-		if (startPosition === -1) {
-			// the piece has already left the building
-			continue;
-		}
-		const isValid  = validateMove(startPosition, board, roll);
+		const startPosition = move.shift().position;
+		const isValid = validateMove(startPosition, board, roll);
 		if (isValid) {
 			const endPosition = startPosition + roll
-			if (endPosition > 24) {
-				orderedPieces[pieceToMove] = -1;
-			} else {
-				orderedPieces[pieceToMove] = endPosition;
-			}
 			board[startPosition] = board[startPosition] - 1;
 			if (endPosition < 25) {
 				if (board[endPosition] === -1) {
@@ -86,23 +73,19 @@ function movePiece (move, board, orderedPieces, roll) {
 					board[endPosition] = board[endPosition] + 1;
 				}
 			}
-
-			return 15 - move.length
+			return 25 - move.length
 		}
-		return -1
-
 	}
+	return -1
 }
 
 function takeTurn ({player, board, rolls, moves}) {
 	if (player === -1) {
 		board = invertBoard(board)
 	}
-
-	const orderedPieces = getOrderedPieces(board);
 	const structuredMoves = structureMoves(moves);
 	const movesMade = structuredMoves.map((move, i) => movePiece(
-		move, board, orderedPieces, rolls[i]
+		move, board, rolls[i]
 	))
 	return {
 		movesMade,
